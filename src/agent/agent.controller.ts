@@ -8,7 +8,6 @@ import { CurrentUser } from 'src/decorators';
 import { AgentCharacterDto } from './dto/post/agentCharacter.dto';
 import { AgentPersonalityDto } from './dto/post/personality.dto';
 import { GetAgentsDto } from './dto/get/agents.dto';
-import { AgentStreamDetails } from './dto/post/stream.dto';
 
 @Controller('agent')
 export class AgentController {
@@ -48,7 +47,9 @@ export class AgentController {
             aiTokenDto.twitter,
             aiTokenDto.telegram,
             aiTokenDto.discord,
-            aiTokenDto.youtube
+            aiTokenDto.youtube,
+            aiTokenDto.youtubeChannelId,
+            aiTokenDto.twitchChannelId
         )
 
     }
@@ -82,22 +83,6 @@ export class AgentController {
             agentPersonalityDto.aiTokenId,
             agentPersonalityDto.voiceType,
             agentPersonalityDto.personalityType
-        )
-
-    }
-
-    @Post("add-token-stream-details")
-    @UseGuards(JwtAuthGuard)
-    @ApiBearerAuth()
-    @ApiSecurity('bearer')
-    async addStreamDetails(@Body() agentStreamDetailsDto: AgentStreamDetails, @CurrentUser() user) {
-
-        await this.checkUserOwnsAgent(agentStreamDetailsDto.aiTokenId, user.userId as number)
-
-        return this.agentSerivce.addStreamDetails(
-            user.userId as number,
-            agentStreamDetailsDto.youtubeChannelId,
-            agentStreamDetailsDto.twitchChannelId
         )
 
     }
