@@ -21,7 +21,7 @@ export class AgentService {
 
     }
 
-    async createToken(userId: number, tokenName: string, symbol: string, tokenDescription: string, tokenImageUrl: string, supply: number, contractAddress: string, website: string, twitter: string, telegram: string, discord: string, youtube: string) {
+    async createToken(userId: number, tokenName: string, symbol: string, tokenDescription: string, tokenImageUrl: string, supply: number, contractAddress: string, website: string, twitter: string, telegram: string, discord: string, youtube: string, youtubeChannelId: string, twitchChannelId: string) {
 
         const agentCharacter = await this.prismaService.aIToken.create({
             data: {
@@ -36,7 +36,9 @@ export class AgentService {
                 telegram,
                 discord,
                 youtube,
-                userId
+                userId,
+                youtubeChannelId,
+                twitchChannelId
             }
         })
         return agentCharacter
@@ -78,25 +80,7 @@ export class AgentService {
         return agentPersonality
 
     }
-    
-    async addStreamDetails(aiTokenId: number, youtubeChannelId: string, twitchChannelId: string) {
 
-        await this.checkTokenExists(aiTokenId);
-
-        try {
-            const socialPlatform = await this.prismaService.streamDetails.create({
-                data: {
-                    aiTokenId,
-                    youtubeChannelId,
-                    twitchChannelId
-                }
-            })
-            return socialPlatform
-        } catch {
-            throw new BadRequestException("Stream details already exists!");
-        }
-
-    }
 
     // Get API [multiple responses]
     async getAgents(filters: GetAgentsDto) {
@@ -141,8 +125,15 @@ export class AgentService {
                 id
             }, 
             include: {
-                streamDetails: true,
-                agentDisplay: true
+                agentDisplay: true,
+                user: {
+                    select: {
+                        username: true,
+                        walletAddress: true,
+                        profile_pic: true,
+                        createdAt: true
+                    }
+                }
             }
         });
 

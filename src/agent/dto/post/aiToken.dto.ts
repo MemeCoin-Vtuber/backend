@@ -83,7 +83,7 @@ export class AiTokenDto {
         description: "discord username",
         example: "shilltube"
     })
-    discord: string
+    discord: string;
 
     @IsString()
     @IsOptional()
@@ -91,6 +91,23 @@ export class AiTokenDto {
         description: "Youtube Username",
         example: "shilltube"
     })
-    youtube: string
+    youtube: string;
+
+
+    @IsString()
+    @IsOptional()
+    @ApiPropertyOptional({
+        description: "Go to youtube settings and get your channel id",
+        example: "Quza...."
+    })
+    youtubeChannelId: string;
+
+    @IsString()
+    @IsOptional()
+    @ApiPropertyOptional({
+        description: "Go to your twitch settings and get your channel id",
+        example: "tsa...."
+    })
+    twitchChannelId: string;
 
 }
