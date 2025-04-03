@@ -114,7 +114,7 @@ export class AgentService {
     // Get API [multiple responses]
     async getAgents(filters: GetAgentsDto) {
 
-        const skip = (filters.page || 0 - 1) * (filters.pageSize || 0);
+        const skip = ((filters.page || 0 ) - 1) * (filters.pageSize || 0);
 
         const results = await this.prismaService.aIToken.findMany({
             where: {
@@ -124,6 +124,7 @@ export class AgentService {
             skip: skip,
             take: filters.pageSize || 0,
             select: {
+                id: true,
                 tokenName: true,
                 tokenDescription: true,
                 tokenImageUrl: true,
@@ -143,11 +144,20 @@ export class AgentService {
         const token = await this.prismaService.aIToken.findUnique({
             where: {
                 id
+            }, 
+            include: {
+                streamDetails: true,
+                agentDisplay: true
             }
         });
 
         return token
 
+    }
+
+    async getAgentTemplates() {
+        const templates = await this.prismaService.agentDisplayTemplate.findMany()
+        return templates
     }
 
 }

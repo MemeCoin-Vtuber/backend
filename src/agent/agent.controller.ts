@@ -49,7 +49,7 @@ export class AgentController {
 
     }
 
-    @Post("add-agent-character")
+    @Post("add-token-character")
     @UseGuards(JwtAuthGuard)
     @ApiBearerAuth()
     @ApiSecurity('bearer')
@@ -66,7 +66,7 @@ export class AgentController {
 
     }
 
-    @Post("add-agent-personality")
+    @Post("add-token-personality")
     @UseGuards(JwtAuthGuard)
     @ApiBearerAuth()
     @ApiSecurity('bearer')
@@ -82,7 +82,7 @@ export class AgentController {
 
     }
 
-    @Post("add-agent-social-platforms")
+    @Post("add-token-social-platforms")
     @UseGuards(JwtAuthGuard)
     @ApiBearerAuth()
     @ApiSecurity('bearer')
@@ -101,7 +101,7 @@ export class AgentController {
 
     }
 
-    @Post("add-agent-stream-details")
+    @Post("add-token-stream-details")
     @UseGuards(JwtAuthGuard)
     @ApiBearerAuth()
     @ApiSecurity('bearer')
@@ -120,6 +120,11 @@ export class AgentController {
     @Get("")
     async getAgents(@Query() filters: GetAgentsDto) {
         return this.agentSerivce.getAgents(filters)
+    }
+
+    @Get("templates")
+    async getAgentTemplates() {
+        return this.agentSerivce.getAgentTemplates()
     }
 
     @Get(":id")
