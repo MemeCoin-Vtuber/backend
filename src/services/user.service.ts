@@ -55,6 +55,21 @@ const getUserByEmail = async (email: string): Promise<User | null> => {
   }
 };
 
+const getUserByWaletAddress = async (
+  walletAddress: string
+): Promise<User | null> => {
+  try {
+    return await prisma.user.findUnique({
+      where: { walletAddress },
+    });
+  } catch (error) {
+    throw new AppError(
+      "Failed to fetch user by wallet address",
+      HttpStatus.INTERNAL_SERVER_ERROR
+    );
+  }
+};
+
 const deleteUser = async (userId: number): Promise<User> => {
   try {
     return prisma.user.delete({
@@ -68,4 +83,10 @@ const deleteUser = async (userId: number): Promise<User> => {
   }
 };
 
-export { createUser, getUserByEmail, getUserById, deleteUser };
+export {
+  createUser,
+  getUserByEmail,
+  getUserById,
+  getUserByWaletAddress,
+  deleteUser,
+};
