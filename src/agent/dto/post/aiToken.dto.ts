@@ -1,5 +1,5 @@
 import { ApiPropertyOptional } from "@nestjs/swagger";
-import { IsInt, IsOptional, IsString } from "class-validator";
+import { IsInt, IsOptional, IsString, MaxLength, MinLength } from "class-validator";
 
 
 export class AiTokenDto {
@@ -19,6 +19,8 @@ export class AiTokenDto {
     symbol: string;
 
     @IsString()
+    @MinLength(3)
+    @MaxLength(100)
     @ApiPropertyOptional({
         description: 'Token Description',
         example: "Hiroi is a crypto degen and a short tempered female."

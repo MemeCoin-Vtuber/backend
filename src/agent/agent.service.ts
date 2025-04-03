@@ -1,5 +1,6 @@
 import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
+import { GetAgentsDto } from './dto/get/agents.dto';
 
 @Injectable()
 export class AgentService {
@@ -88,6 +89,64 @@ export class AgentService {
             }
         })
         return socialPlatform
+
+    }
+
+    async addStreamDetails(aiTokenId: number, youtubeChannelId: string, twitchChannelId: string) {
+
+        await this.checkTokenExists(aiTokenId);
+
+        try {
+            const socialPlatform = await this.prismaService.streamDetails.create({
+                data: {
+                    aiTokenId,
+                    youtubeChannelId,
+                    twitchChannelId
+                }
+            })
+            return socialPlatform
+        } catch {
+            throw new BadRequestException("Stream details already exists!");
+        }
+
+    }
+
+    // Get API [multiple responses]
+    async getAgents(filters: GetAgentsDto) {
+
+        const skip = (filters.page || 0 - 1) * (filters.pageSize || 0);
+
+        const results = await this.prismaService.aIToken.findMany({
+            where: {
+                tokenName: filters.tokenName ? { contains: filters.tokenName, mode: 'insensitive' } : undefined,
+                tokenDescription: filters.tokenDescription ? { contains: filters.tokenDescription, mode: 'insensitive' } : undefined,
+            },
+            skip: skip,
+            take: filters.pageSize || 0,
+            select: {
+                tokenName: true,
+                tokenDescription: true,
+                tokenImageUrl: true,
+            },
+            orderBy: {
+                createdAt: 'desc', // Order by latest created date
+            },
+        });
+
+        return results;
+
+    }
+
+    // Show agent detail
+    async getAgent(id: number) {
+
+        const token = await this.prismaService.aIToken.findUnique({
+            where: {
+                id
+            }
+        });
+
+        return token
 
     }
 

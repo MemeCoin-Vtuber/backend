@@ -1,13 +1,15 @@
-import { Body, Controller, NotFoundException, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, NotFoundException, Param, ParseIntPipe, Post, Query, UseGuards } from '@nestjs/common';
 import { ApiBearerAuth, ApiSecurity } from '@nestjs/swagger';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { AiTokenDto } from './dto/aiToken.dto';
+import { AiTokenDto } from './dto/post/aiToken.dto';
 import { AgentService } from './agent.service';
 import { CurrentUser } from 'src/decorators';
-import { AgentCharacterDto } from './dto/agentCharacter.dto';
-import { AgentPersonalityDto } from './dto/personality.dto';
-import { AgentSocialPlatformDto } from './dto/socialPlatform.dto';
+import { AgentCharacterDto } from './dto/post/agentCharacter.dto';
+import { AgentPersonalityDto } from './dto/post/personality.dto';
+import { AgentSocialPlatformDto } from './dto/post/socialPlatform.dto';
+import { GetAgentsDto } from './dto/get/agents.dto';
+import { AgentStreamDetails } from './dto/post/stream.dto';
 
 @Controller('agent')
 export class AgentController {
@@ -97,6 +99,32 @@ export class AgentController {
             agentSocialPlatformDto.youtube
         )
 
+    }
+
+    @Post("add-agent-stream-details")
+    @UseGuards(JwtAuthGuard)
+    @ApiBearerAuth()
+    @ApiSecurity('bearer')
+    async addStreamDetails(@Body() agentStreamDetailsDto: AgentStreamDetails, @CurrentUser() user) {
+
+        await this.checkUserOwnsAgent(agentStreamDetailsDto.aiTokenId, user.userId as number)
+
+        return this.agentSerivce.addStreamDetails(
+            user.userId as number,
+            agentStreamDetailsDto.youtubeChannelId,
+            agentStreamDetailsDto.twitchChannelId
+        )
+
+    }
+
+    @Get("")
+    async getAgents(@Query() filters: GetAgentsDto) {
+        return this.agentSerivce.getAgents(filters)
+    }
+
+    @Get(":id")
+    async getAgent(@Param("id", ParseIntPipe) id: number) {
+        return this.agentSerivce.getAgent(id)
     }
 
 }
