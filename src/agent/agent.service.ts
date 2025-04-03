@@ -105,6 +105,11 @@ export class AgentService {
 
         const results = await this.prismaService.aIToken.findMany({
             where: {
+                ...(
+                    filters.walletAddress && filters.walletAddress !== ""
+                    ? {user: {walletAddress: filters.walletAddress}}
+                    : {}
+                ),
                 tokenName: filters.tokenName ? { contains: filters.tokenName, mode: 'insensitive' } : undefined,
                 tokenDescription: filters.tokenDescription ? { contains: filters.tokenDescription, mode: 'insensitive' } : undefined,
             },
@@ -113,8 +118,11 @@ export class AgentService {
             select: {
                 id: true,
                 tokenName: true,
+                symbol: true,
                 tokenDescription: true,
                 tokenImageUrl: true,
+                contractAddress: true,
+                personalityType: true
             },
             orderBy: {
                 createdAt: 'desc', // Order by latest created date

@@ -24,7 +24,7 @@ export class AgentController {
             }
         })
 
-        if (!token) {
+        if (token === null) {
             throw new NotFoundException("Token Not found");
         }
 
@@ -60,9 +60,9 @@ export class AgentController {
     async addAgentCharacter(@Body() agentCharacterDto: AgentCharacterDto, @CurrentUser() user) {
 
         await this.checkUserOwnsAgent(agentCharacterDto.aiTokenId, user.userId as number)
-
+        
         return this.agentSerivce.addAgentCharacter(
-            user.userId as number,
+            agentCharacterDto.aiTokenId,
             agentCharacterDto.agentName,
             agentCharacterDto.agentIpfsUrl,
             agentCharacterDto.agentImageUrl
@@ -79,7 +79,7 @@ export class AgentController {
         await this.checkUserOwnsAgent(agentPersonalityDto.aiTokenId, user.userId as number)
 
         return this.agentSerivce.addPersonality(
-            user.userId as number,
+            agentPersonalityDto.aiTokenId,
             agentPersonalityDto.voiceType,
             agentPersonalityDto.personalityType
         )

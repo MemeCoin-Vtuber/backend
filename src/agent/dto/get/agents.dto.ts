@@ -3,14 +3,20 @@ import { ApiPropertyOptional } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
 
 export class GetAgentsDto {
+
     @IsOptional()
     @IsString()
-    @ApiPropertyOptional({ description: 'Filter by token name', example: 'Hiroi' })
+    @ApiPropertyOptional({ description: 'Filter by owner wallet address | leave empty if none' })
+    walletAddress?: string;
+
+    @IsOptional()
+    @IsString()
+    @ApiPropertyOptional({ description: 'Filter by token name' })
     tokenName?: string;
 
     @IsOptional()
     @IsString()
-    @ApiPropertyOptional({ description: 'Filter by token description', example: 'A crypto degen' })
+    @ApiPropertyOptional({ description: 'Filter by token description' })
     tokenDescription?: string;
 
     @IsOptional()
