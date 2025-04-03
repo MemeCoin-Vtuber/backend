@@ -13,17 +13,18 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-
-
 model User {
   id            Int       @id @default(autoincrement())
   username      String    @unique
-  email         String    @unique
   walletAddress String    @unique
+  bio           String?
+  profile_pic   String?
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt()
   tokens        Token[]
   aiTokens      AIToken[]
+
+  @@index([id, walletAddress])
 }
 
 model Token {
