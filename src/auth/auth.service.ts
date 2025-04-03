@@ -4,8 +4,7 @@ import { JwtService } from '@nestjs/jwt';
 import { User } from '@prisma/client';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { v4 as uuid4 } from 'uuid';
-import { Ed25519PublicKey, Ed25519Signature, Hex, PublicKey } from "@aptos-labs/ts-sdk"
-import nacl from 'tweetnacl';
+import { Ed25519PublicKey, Ed25519Signature } from "@aptos-labs/ts-sdk"
 
 @Injectable()
 export class AuthService {    

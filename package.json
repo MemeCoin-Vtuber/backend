@@ -21,6 +21,7 @@
   },
   "dependencies": {
     "@aptos-labs/ts-sdk": "^1.36.0",
+    "@azure/storage-blob": "^12.26.0",
     "@nestjs/common": "^11.0.1",
     "@nestjs/config": "^4.0.1",
     "@nestjs/core": "^11.0.1",

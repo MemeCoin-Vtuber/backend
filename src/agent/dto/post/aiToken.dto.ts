@@ -46,7 +46,7 @@ export class AiTokenDto {
     supply: number
 
     @IsString()
-    @IsNotEmpty()
+    @IsOptional()
     @ApiPropertyOptional({
         description: 'Only add if you already deployed your token',
         example: null

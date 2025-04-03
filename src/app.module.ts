@@ -6,12 +6,14 @@ import { PrismaService } from './prisma/prisma.service';
 import { ConfigService } from './config/config.service';
 import { ConfigModule } from '@nestjs/config';
 import { AgentModule } from './agent/agent.module';
+import { AzureModule } from './azure/azure.module';
 
 @Module({
   imports: [
     AuthModule,
     ConfigModule.forRoot({isGlobal: true}),
-    AgentModule
+    AgentModule,
+    AzureModule
   ],
   controllers: [AppController],
   providers: [AppService, PrismaService, ConfigService],
