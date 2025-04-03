@@ -45,15 +45,21 @@ model AIToken {
   supply           Int
   contractAddress  String? // To store address after smart contract execution
 
+  // Social links
+
   website  String?
   twitter  String?
   telegram String?
   discord  String?
   youtube  String?
 
+  // Personality Info
+  voiceType String?
+  personalityType String[]
+
+
   userId         Int
   user           User           @relation(fields: [userId], references: [id], onDelete: Cascade)
-  personality    Personality? // One-to-one relation
   streamDetails  StreamDetails? // One-to-one relation
   agentDisplay   AgentDisplay?
   createdAt      DateTime       @default(now())
@@ -61,17 +67,13 @@ model AIToken {
   agentDisplayId Int?
 }
 
-model Personality {
-  id                       Int      @id @default(autoincrement())
-  aiPersonalityImageUrl    String
-  aiPersonality            String
-  aiPersonalityDescription String
-  aiPersonalityVoice       String?
-  aiPersonalityType        String?
-  aiToken                  AIToken  @relation(fields: [aiTokenId], references: [id], onDelete: Cascade)
-  aiTokenId                Int      @unique // Ensure one-to-one relationship
-  createdAt                DateTime @default(now())
-  updatedAt                DateTime @updatedAt()
+model AgentDisplayTemplate {
+  id            Int       @id @default(autoincrement())
+  agentImageUrl String
+  agentName     String
+  agentIpfsUrl  String
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt()
 }
 
 model AgentDisplay {
