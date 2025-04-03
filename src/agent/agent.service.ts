@@ -21,7 +21,7 @@ export class AgentService {
 
     }
 
-    async createToken(userId: number, tokenName: string, symbol: string, tokenDescription: string, tokenImageUrl: string, supply: number, contractAddress: string) {
+    async createToken(userId: number, tokenName: string, symbol: string, tokenDescription: string, tokenImageUrl: string, supply: number, contractAddress: string, website: string, twitter: string, telegram: string, discord: string, youtube: string) {
 
         const agentCharacter = await this.prismaService.aIToken.create({
             data: {
@@ -31,6 +31,11 @@ export class AgentService {
                 tokenImageUrl,
                 supply,
                 contractAddress,
+                website,
+                twitter,
+                telegram,
+                discord,
+                youtube,
                 userId
             }
         })
@@ -73,25 +78,7 @@ export class AgentService {
         return agentPersonality
 
     }
-
-    async addSocialPlatform(aiTokenId: number, website: string, twitter: string, telegram: string, discord: string, youtube: string) {
-
-        await this.checkTokenExists(aiTokenId);
-
-        const socialPlatform = await this.prismaService.aIToken.update({
-            where: { id: aiTokenId },
-            data: {
-                website,
-                twitter,
-                telegram,
-                discord,
-                youtube
-            }
-        })
-        return socialPlatform
-
-    }
-
+    
     async addStreamDetails(aiTokenId: number, youtubeChannelId: string, twitchChannelId: string) {
 
         await this.checkTokenExists(aiTokenId);

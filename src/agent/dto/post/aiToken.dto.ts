@@ -1,10 +1,11 @@
 import { ApiPropertyOptional } from "@nestjs/swagger";
-import { IsInt, IsOptional, IsString, MaxLength, MinLength } from "class-validator";
+import { IsInt, IsNotEmpty, IsOptional, IsString, MaxLength, Min, MinLength } from "class-validator";
 
 
 export class AiTokenDto {
 
     @IsString()
+    @IsNotEmpty()
     @ApiPropertyOptional({
         description: 'Token Name',
         example: "Hiroi"
@@ -12,6 +13,7 @@ export class AiTokenDto {
     tokenName: string;
 
     @IsString()
+    @IsNotEmpty()
     @ApiPropertyOptional({
         description: 'Token Symbol',
         example: "HRI"
@@ -28,6 +30,7 @@ export class AiTokenDto {
     tokenDescription: string;
 
     @IsString()
+    @IsNotEmpty()
     @ApiPropertyOptional({
         description: 'Token Image URL',
         example: "https://tokenurl.png"
@@ -35,6 +38,7 @@ export class AiTokenDto {
     tokenImageUrl: string;
 
     @IsInt()
+    @Min(1)
     @ApiPropertyOptional({
         description: 'Total Token Supply',
         example: 10000
@@ -42,11 +46,51 @@ export class AiTokenDto {
     supply: number
 
     @IsString()
-    @IsOptional()
+    @IsNotEmpty()
     @ApiPropertyOptional({
         description: 'Only add if you already deployed your token',
         example: null
     })
     contractAddress: string
+
+
+    @IsString()
+    @IsOptional()
+    @ApiPropertyOptional({
+        example: "https://shilltube.fun"
+    })
+    website: string;
+
+    @IsString()
+    @IsOptional()
+    @ApiPropertyOptional({
+        description: "Twitter Username",
+        example: "shilltube"
+    })
+    twitter: string;
+
+    @IsString()
+    @IsOptional()
+    @ApiPropertyOptional({
+        description: "Telegram Username",
+        example: "shilltube"
+    })
+    telegram: string;
+
+    @IsString()
+    @IsOptional()
+    @ApiPropertyOptional({
+        description: "discord username",
+        example: "shilltube"
+    })
+    discord: string
+
+    @IsString()
+    @IsOptional()
+    @ApiPropertyOptional({
+        description: "Youtube Username",
+        example: "shilltube"
+    })
+    youtube: string
 
 }

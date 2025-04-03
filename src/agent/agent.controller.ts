@@ -7,7 +7,6 @@ import { AgentService } from './agent.service';
 import { CurrentUser } from 'src/decorators';
 import { AgentCharacterDto } from './dto/post/agentCharacter.dto';
 import { AgentPersonalityDto } from './dto/post/personality.dto';
-import { AgentSocialPlatformDto } from './dto/post/socialPlatform.dto';
 import { GetAgentsDto } from './dto/get/agents.dto';
 import { AgentStreamDetails } from './dto/post/stream.dto';
 
@@ -44,7 +43,12 @@ export class AgentController {
             aiTokenDto.tokenDescription,
             aiTokenDto.tokenImageUrl,
             aiTokenDto.supply,
-            aiTokenDto.contractAddress
+            aiTokenDto.contractAddress,
+            aiTokenDto.website,
+            aiTokenDto.twitter,
+            aiTokenDto.telegram,
+            aiTokenDto.discord,
+            aiTokenDto.youtube
         )
 
     }
@@ -78,25 +82,6 @@ export class AgentController {
             user.userId as number,
             agentPersonalityDto.voiceType,
             agentPersonalityDto.personalityType
-        )
-
-    }
-
-    @Post("add-token-social-platforms")
-    @UseGuards(JwtAuthGuard)
-    @ApiBearerAuth()
-    @ApiSecurity('bearer')
-    async addAgentSocialPlatform(@Body() agentSocialPlatformDto: AgentSocialPlatformDto, @CurrentUser() user) {
-
-        await this.checkUserOwnsAgent(agentSocialPlatformDto.aiTokenId, user.userId as number)
-
-        return this.agentSerivce.addSocialPlatform(
-            user.userId as number,
-            agentSocialPlatformDto.website,
-            agentSocialPlatformDto.twitter,
-            agentSocialPlatformDto.telegram,
-            agentSocialPlatformDto.discord,
-            agentSocialPlatformDto.youtube
         )
 
     }

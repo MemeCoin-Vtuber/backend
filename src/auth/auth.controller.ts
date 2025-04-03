@@ -15,7 +15,7 @@ export class AuthController {
     @Post("login")
     @UsePipes(new ValidationPipe({ whitelist: true, transform: true }))
     async login(@Body() loginDto: LoginDto) {
-        return await this.authService.login(loginDto.wallet_address, loginDto.signature, loginDto.message)
+        return await this.authService.login(loginDto.wallet_address, loginDto.public_key, loginDto.signature, loginDto.message)
     }
 
     @Post("update")

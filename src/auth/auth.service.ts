@@ -2,25 +2,43 @@ import { BadRequestException, Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { User } from '@prisma/client';
-import { ethers } from 'ethers';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { v4 as uuid4 } from 'uuid';
+import { Ed25519PublicKey, Ed25519Signature, Hex, PublicKey } from "@aptos-labs/ts-sdk"
+import nacl from 'tweetnacl';
+
 @Injectable()
-export class AuthService {
+export class AuthService {    
 
     constructor (private jwtService: JwtService, private prismaService: PrismaService, private configService: ConfigService) {}
 
-    async login(wallet_address: string, signature: string, message: string): Promise<{access_token: string}> {
+    async login(wallet_address: string, public_key: string, signature: string, message: string): Promise<{access_token: string}> {
 
-        const signersAddress = ethers.verifyMessage(message, signature);
+        
+        
+        try {
 
-        if (signersAddress !== wallet_address) {
-            throw new BadRequestException("Signature didn't matched wallet address!");
+            const publicKey = new Ed25519PublicKey(public_key);
+            const signatureObj = new Ed25519Signature(signature);
+            const encodedMessage = new TextEncoder().encode(message);
+
+            const result = publicKey.verifySignature({
+                message: encodedMessage,
+                signature: signatureObj
+            })
+
+            if (!result) {
+                throw new BadRequestException("Invalid signature!");
+            }
+
+            
+        } catch (err) {
+            throw new BadRequestException(err.message);
         }
 
         let user = await this.prismaService.user.findUnique({
             where: {
-                walletAddress: signersAddress
+                walletAddress: wallet_address
             }
         })
 
@@ -28,7 +46,7 @@ export class AuthService {
             user = await this.prismaService.user.create({
                 data: {
                     username: `User-${uuid4().toString()}`,
-                    walletAddress: signersAddress,
+                    walletAddress: wallet_address,
                 }
             })
         }
