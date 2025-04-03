@@ -1,8 +1,31 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
+import { ConfigService } from '@nestjs/config';
+import { ValidationPipe } from '@nestjs/common';
+import { DocumentBuilder } from '@nestjs/swagger';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-  await app.listen(process.env.PORT ?? 3000);
+  const configService = app.get(ConfigService)
+
+  app.useGlobalPipes(
+    new ValidationPipe({
+      whitelist: true,
+      forbidNonWhitelisted: true,
+      transform: true,
+    }),
+  )
+
+  app.enableCors();
+
+  const config = new DocumentBuilder()
+    .setTitle('Shilltube Backend API service')
+    .setDescription('API for the Shilltube API Service')
+    .setVersion('1.0')
+    .build();
+
+
+  const port = configService.get<number>('PORT', 3000);
+  await app.listen(port);
 }
 bootstrap();
