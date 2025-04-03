@@ -4,7 +4,8 @@ import { LoginDto } from './dto/login.dto';
 import { JwtAuthGuard } from './jwt-auth.guard';
 import { ApiBearerAuth, ApiSecurity } from '@nestjs/swagger';
 import { UserUpdateDto } from './dto/update.dto';
-import { CurrentUser } from './current-user.decorator';
+import { CurrentUser } from 'src/decorators';
+
 
 @Controller('auth')
 export class AuthController {

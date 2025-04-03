@@ -9,7 +9,6 @@ import { PrismaService } from 'src/prisma/prisma.service';
 
 @Module({
   imports: [
-    ConfigModule.forRoot(),
     PassportModule,
     JwtModule.register({
       secret: process.env.JWT_SECRET || "supersecret",
