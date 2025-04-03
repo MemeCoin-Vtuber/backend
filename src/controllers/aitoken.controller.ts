@@ -1,7 +1,11 @@
 import { Request, Response, NextFunction } from "express";
 import AppError from "../utils/AppError";
 import HttpStatus from "http-status";
-import { createAIToken } from "../services/aitoken.service";
+import {
+  createAIToken,
+  getAITokenById,
+  getAllTokens,
+} from "../services/aitoken.service";
 
 export const createAITokenController = async (
   req: Request,
@@ -9,46 +13,79 @@ export const createAITokenController = async (
   next: NextFunction
 ) => {
   try {
-    const {
-      userId,
-      tokenName,
-      symbol,
-      tokenDescription,
-      tokenImageUrl,
-      supply,
-    } = req.body;
-
+    const { userId } = req.params;
+    const { tokenName, symbol, tokenDescription, tokenImageUrl, supply } =
+      req.body;
     if (
-      !userId ||
       !tokenName ||
       !symbol ||
       !tokenDescription ||
       !tokenImageUrl ||
       !supply
     ) {
-      throw new AppError(
-        "Please provide userId, tokenName, symbol, tokenDescription, tokenImageUrl and supply",
-        HttpStatus.BAD_REQUEST
-      );
+      return res.status(400).json({
+        success: false,
+        message: "Missing required fields",
+        requiredFields: [
+          "tokenName",
+          "symbol",
+          "tokenDescription",
+          "tokenImageUrl",
+          "supply",
+        ],
+      });
     }
 
-    const aitoken = await createAIToken(
-      userId,
+    const aiToken = await createAIToken(
       tokenName,
       symbol,
       tokenDescription,
       tokenImageUrl,
-      supply
+      supply,
+      parseInt(userId)
     );
-    if (!aitoken) {
-      throw new AppError(
-        "Failed to create aitoken",
-        HttpStatus.INTERNAL_SERVER_ERROR
-      );
-    }
+    return res.status(201).json({
+      success: true,
+      message: "AI Token created successfully",
+      data: aiToken,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
 
-    res.status(200).json({
-      aitoken,
+export const getAllAITokenController = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const aiToken = await getAllTokens();
+    return res.status(200).json({
+      success: true,
+      message: "AI Token fetched successfully",
+      data: aiToken,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const getAITokenByIdController = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const { tokenId } = req.params;
+    if (!tokenId) {
+      new AppError("Please provide tokenId", HttpStatus.BAD_REQUEST);
+    }
+    const aiToken = await getAITokenById(parseInt(tokenId));
+    return res.status(200).json({
+      success: true,
+      message: "AI Token fetched successfully",
+      data: aiToken,
     });
   } catch (error) {
     next(error);

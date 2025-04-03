@@ -1,7 +1,7 @@
 import Joi from "joi";
 
 export const createAITokenSchema = Joi.object({
-  userId: Joi.number().required(),
+  // userId: Joi.number().required(),
   tokenName: Joi.string().required(),
   symbol: Joi.string().required(),
   tokenDescription: Joi.string().required(),

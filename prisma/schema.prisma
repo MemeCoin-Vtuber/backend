@@ -1,9 +1,6 @@
 // This is your Prisma schema file,
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -20,8 +17,8 @@ model User {
   walletAddress String    @unique
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt()
-  Token         Token[]
-  AI_Token      AIToken[]
+  tokens        Token[]
+  aiTokens      AIToken[]
 }
 
 model Token {
@@ -34,12 +31,78 @@ model Token {
 }
 
 model AIToken {
-  id               Int    @id @default(autoincrement())
+  id               Int                   @id @default(autoincrement())
   tokenName        String
   symbol           String
   tokenDescription String
   tokenImageUrl    String
   supply           Int
+  contractAddress  String? // To store address after smart contract execution
   userId           Int
-  user             User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user             User                  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  personality      Personality? // One-to-one relation
+  socialPlatforms  SocialPlatformToken[]
+  streamDetails    StreamDetails? // One-to-one relation
+  agentDisplay     AgentDisplay?
+  createdAt        DateTime              @default(now())
+  updatedAt        DateTime              @updatedAt()
+  agentDisplayId   Int?
+}
+
+model Personality {
+  id                       Int      @id @default(autoincrement())
+  aiPersonalityImageUrl    String
+  aiPersonality            String
+  aiPersonalityDescription String
+  aiPersonalityVoice       String?
+  aiPersonalityType        String?
+  aiToken                  AIToken  @relation(fields: [aiTokenId], references: [id], onDelete: Cascade)
+  aiTokenId                Int      @unique // Ensure one-to-one relationship
+  createdAt                DateTime @default(now())
+  updatedAt                DateTime @updatedAt()
+}
+
+model SocialPlatform {
+  id           Int                   @id @default(autoincrement())
+  platformType String // "twitter", "instagram", etc.
+  tokens       SocialPlatformToken[]
+  createdAt    DateTime              @default(now())
+  updatedAt    DateTime              @updatedAt()
+}
+
+model SocialPlatformToken {
+  id               Int            @id @default(autoincrement())
+  aiToken          AIToken        @relation(fields: [aiTokenId], references: [id], onDelete: Cascade)
+  aiTokenId        Int
+  socialPlatform   SocialPlatform @relation(fields: [socialPlatformId], references: [id])
+  socialPlatformId Int
+  username         String?
+  emailId          String?
+  password         String?
+  knowledgeBase    String?
+  createdAt        DateTime       @default(now())
+  updatedAt        DateTime       @updatedAt()
+
+  @@unique([aiTokenId, socialPlatformId]) // Prevent duplicate entries
+}
+
+model AgentDisplay {
+  id            Int      @id @default(autoincrement())
+  agentImageUrl String
+  agentName     String
+  agentIpfsUrl  String
+  aiToken       AIToken  @relation(fields: [aiTokenId], references: [id], onDelete: Cascade)
+  aiTokenId     Int      @unique
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt()
+}
+
+model StreamDetails {
+  id               Int      @id @default(autoincrement())
+  youtubeChannelId String?
+  twitchChannelId  String?
+  aiToken          AIToken  @relation(fields: [aiTokenId], references: [id], onDelete: Cascade)
+  aiTokenId        Int      @unique // Ensure one-to-one relationship
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt()
 }
