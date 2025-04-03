@@ -37,7 +37,7 @@ export class AgentService {
 
     }
 
-    async createAgentCharacter(aiTokenId: number, agentName: string, agentIpfsUrl: string, agentImageUrl: string) {
+    async addAgentCharacter(aiTokenId: number, agentName: string, agentIpfsUrl: string, agentImageUrl: string) {
 
         await this.checkTokenExists(aiTokenId);
 

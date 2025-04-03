@@ -9,7 +9,7 @@ export class AiTokenDto {
         description: 'Token Name',
         example: "Hiroi"
     })
-    tokentokenName: string;
+    tokenName: string;
 
     @IsString()
     @ApiPropertyOptional({

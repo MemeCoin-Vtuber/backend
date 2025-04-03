@@ -19,7 +19,6 @@ export class AgentPersonalityDto {
     })
     voiceType: string;
 
-    @IsOptional()
     @IsArray()
     @IsString({ each: true }) // Ensures each element in the array is a string
     @ArrayNotEmpty()
@@ -27,6 +26,6 @@ export class AgentPersonalityDto {
         example: ["Friendly", "Sarcastic", "Energetic"],
         type: [String]
     })
-    personalityType?: string[];
+    personalityType: string[];
 
 }

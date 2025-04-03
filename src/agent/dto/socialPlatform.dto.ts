@@ -2,7 +2,7 @@ import { ApiPropertyOptional } from "@nestjs/swagger";
 import { IsInt, IsOptional, IsString } from "class-validator";
 
 
-export class SocialPlatformDto {
+export class AgentSocialPlatformDto {
 
     @IsInt()
     @ApiPropertyOptional({
