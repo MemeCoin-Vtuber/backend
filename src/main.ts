@@ -29,7 +29,7 @@ async function bootstrap() {
   SwaggerModule.setup("api/docs", app, document);
 
   const port = configService.get<number>('PORT', 3000);
-  await app.listen(port);
+  await app.listen(port, "0.0.0.0");
 
   console.log(`Shilltube Backend is running on: ${await app.getUrl()}`);
 }
