@@ -7,13 +7,21 @@ import { ConfigService } from './config/config.service';
 import { ConfigModule } from '@nestjs/config';
 import { AgentModule } from './agent/agent.module';
 import { AzureModule } from './azure/azure.module';
+import { ChatModule } from './chat/chat.module';
+import { PrismaModule } from './prisma/prisma.module';
+import { PriceTrackerModule } from './token-indexer/token-indexer.module';
+import { ScheduleModule } from '@nestjs/schedule';
 
 @Module({
   imports: [
+    ScheduleModule.forRoot(),
+    PrismaModule,
     AuthModule,
-    ConfigModule.forRoot({isGlobal: true}),
+    ConfigModule.forRoot({ isGlobal: true }),
     AgentModule,
-    AzureModule
+    AzureModule,
+    ChatModule,
+    PriceTrackerModule,
   ],
   controllers: [AppController],
   providers: [AppService, PrismaService, ConfigService],
