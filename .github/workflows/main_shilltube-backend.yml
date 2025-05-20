@@ -26,7 +26,9 @@ jobs:
       - name: Install dependencies and build
         run: |
           npm install
+          npx prisma generate
           npm run build
+
 
       - name: Prepare app for deployment
         run: |
