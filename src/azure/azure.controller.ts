@@ -5,8 +5,9 @@ import { Express } from 'express';
 import { AzureStorageService } from './azure.service';
 import { FileUploadDto } from './dto/azure.dto';
 import { ApiBearerAuth, ApiBody, ApiConsumes, ApiSecurity } from '@nestjs/swagger';
-import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { CurrentUser } from 'src/decorators';
+import { PrivyAuthGuard } from 'src/auth/privy-auth-guard';
+import { GetUser } from 'src/auth/privy-decorator';
 
 @Controller('file')
 export class FileController {
@@ -14,7 +15,7 @@ export class FileController {
 
     @Post('upload')
     @UseInterceptors(FileInterceptor('file'))
-    @UseGuards(JwtAuthGuard)
+    @UseGuards(PrivyAuthGuard)
     @ApiBearerAuth()
     @ApiSecurity('bearer')
     @ApiConsumes('multipart/form-data')
@@ -27,7 +28,7 @@ export class FileController {
             },
         },
     })
-    async uploadFile(@UploadedFile() file: any, @Body() fileUploadDto, @CurrentUser() user) {
+    async uploadFile(@UploadedFile() file: any, @Body() fileUploadDto, @GetUser user) {
         try {
 
             const MAX_FILE_SIZE =  1 * 1024 * 1024;

@@ -54,30 +54,30 @@ model AIToken {
   youtube  String?
 
   // Personality Info
-  voiceType String?
+  voiceType       String?
   personalityType String[]
 
   youtubeChannelId String?
   twitchChannelId  String?
 
-
-  userId         Int
-  user           User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId Int
+  user   User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   agentDisplayId Int?
   agentDisplay   AgentDisplay?
 
-  createdAt      DateTime       @default(now())
-  updatedAt      DateTime       @updatedAt()
+  createdAt         DateTime            @default(now())
+  updatedAt         DateTime            @updatedAt()
+  TokenPriceHistory TokenPriceHistory[]
 }
 
 model AgentDisplayTemplate {
-  id            Int       @id @default(autoincrement())
+  id            Int      @id @default(autoincrement())
   agentImageUrl String
   agentName     String
   agentIpfsUrl  String
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt()
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt()
 }
 
 model AgentDisplay {
@@ -89,4 +89,15 @@ model AgentDisplay {
   aiTokenId     Int      @unique
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt()
+}
+
+model TokenPriceHistory {
+  id         Int      @id @default(autoincrement())
+  priceInWei String // Use string to safely store large uint256 values
+  timestamp  DateTime @default(now())
+
+  aiToken   AIToken @relation(fields: [aiTokenId], references: [id], onDelete: Cascade)
+  aiTokenId Int
+
+  @@index([aiTokenId, timestamp])
 }

@@ -1,10 +1,12 @@
 import { Body, Controller, Post, UseGuards, UsePipes, ValidationPipe } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { LoginDto } from './dto/login.dto';
-import { JwtAuthGuard } from './jwt-auth.guard';
 import { ApiBearerAuth, ApiSecurity } from '@nestjs/swagger';
 import { UserUpdateDto } from './dto/update.dto';
 import { CurrentUser } from 'src/decorators';
+import { GetUser } from './privy-decorator';
+import { PrivyAuthGuard } from './privy-auth-guard';
+import { User } from '@privy-io/server-auth';
 
 
 @Controller('auth')
@@ -14,12 +16,15 @@ export class AuthController {
 
     @Post("login")
     @UsePipes(new ValidationPipe({ whitelist: true, transform: true }))
-    async login(@Body() loginDto: LoginDto) {
-        return await this.authService.login(loginDto.wallet_address, loginDto.public_key, loginDto.signature, loginDto.message)
+    @UseGuards(PrivyAuthGuard)
+    @ApiBearerAuth()
+    @ApiSecurity('bearer')
+    async login(@GetUser user: User) {
+        return await this.authService.login(user)
     }
 
     @Post("update")
-    @UseGuards(JwtAuthGuard)
+    @UseGuards(PrivyAuthGuard)
     @ApiBearerAuth()
     @ApiSecurity('bearer')
     async update(@Body() userUpdateDto: UserUpdateDto, @CurrentUser() user) {

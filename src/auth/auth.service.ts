@@ -2,42 +2,20 @@ import { BadRequestException, Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { User } from '@prisma/client';
+import { User as PrivyUser } from '@privy-io/server-auth';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { v4 as uuid4 } from 'uuid';
-import { Ed25519PublicKey, Ed25519Signature } from "@aptos-labs/ts-sdk"
 
 @Injectable()
 export class AuthService {    
 
     constructor (private jwtService: JwtService, private prismaService: PrismaService, private configService: ConfigService) {}
 
-    async login(wallet_address: string, public_key: string, signature: string, message: string): Promise<{access_token: string}> {
-
-        
-        
-        try {
-
-            const publicKey = new Ed25519PublicKey(public_key);
-            const signatureObj = new Ed25519Signature(signature);
-            const encodedMessage = new TextEncoder().encode(message);
-
-            const result = publicKey.verifySignature({
-                message: encodedMessage,
-                signature: signatureObj
-            })
-
-            if (!result) {
-                throw new BadRequestException("Invalid signature!");
-            }
-
-            
-        } catch (err) {
-            throw new BadRequestException(err.message);
-        }
+    async login(userData: PrivyUser): Promise<User> {
 
         let user = await this.prismaService.user.findUnique({
             where: {
-                walletAddress: wallet_address
+                walletAddress: userData.wallet?.address
             }
         })
 
@@ -45,22 +23,12 @@ export class AuthService {
             user = await this.prismaService.user.create({
                 data: {
                     username: `User-${uuid4().toString()}`,
-                    walletAddress: wallet_address,
+                    walletAddress: userData.wallet?.address!,
                 }
             })
         }
 
-        const issuedAt = Math.floor(Date.now() / 1000);
-
-        const jwtPayload = {
-            walletAddress: user.walletAddress,
-            userId: user.id,
-            iat: issuedAt,
-        };
-
-        const access_token = this.jwtService.sign(jwtPayload, { expiresIn: this.configService.get("JWT_TOKEN_EXPIRY", "1d") });
-
-        return { access_token }
+        return user;
 
     }
 
