@@ -21,7 +21,7 @@ import { FilesModule } from './files/file.module';
     AuthModule,
     ConfigModule.forRoot({ isGlobal: true }),
     AgentModule,
-    AzureModule,
+    // AzureModule,
     ChatModule,
     PriceTrackerModule,
     SupabaseModule,
