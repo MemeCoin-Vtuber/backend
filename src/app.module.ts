@@ -11,6 +11,8 @@ import { ChatModule } from './chat/chat.module';
 import { PrismaModule } from './prisma/prisma.module';
 import { PriceTrackerModule } from './token-indexer/token-indexer.module';
 import { ScheduleModule } from '@nestjs/schedule';
+import { SupabaseModule } from './supabase/supabase.module';
+import { FilesModule } from './files/file.module';
 
 @Module({
   imports: [
@@ -22,6 +24,8 @@ import { ScheduleModule } from '@nestjs/schedule';
     AzureModule,
     ChatModule,
     PriceTrackerModule,
+    SupabaseModule,
+    FilesModule
   ],
   controllers: [AppController],
   providers: [AppService, PrismaService, ConfigService],
